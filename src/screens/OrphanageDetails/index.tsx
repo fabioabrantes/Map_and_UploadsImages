@@ -8,6 +8,7 @@ import {Load} from '../../components/Load';
 import mapMarker from '../../images/map-marker.png';
 
 import api from '../../services/api';
+import Association from '../../dto/Issociation';
 
 import { 
   Button, 
@@ -38,16 +39,12 @@ interface ImageUrl{
   id:number;
   url:string;
 }
-interface IAssociation {
-  id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
+interface IAssociation extends Association{
   about: string;
   instructions: string;
   opening_hours: string;
   open_on_weekends: boolean;
-  images:Array<ImageUrl> 
+  imagesPath:Array<ImageUrl> 
 }
 
 interface ParamsId{
@@ -58,10 +55,11 @@ export function OrphanageDetails(){
 
   const route = useRoute();
   const {id} = route.params as ParamsId;
-
+  console.log(id);
 
   useEffect(()=>{
     api.get(`associations/detail/${id}`).then(response=>{
+      console.log(response.data)
       setAssociation(response.data);
    })
  },[id]);
@@ -79,11 +77,13 @@ export function OrphanageDetails(){
     <ContainerScroll>
       <ContainerImages>
         <ScrollImages  horizontal pagingEnabled>
-          {association.images.map(image=>{
-            return (
-              <Picture key={image.id} source={{uri:image.url}}/>
-            )
-          })}
+          {
+            association.imagesPath && association.imagesPath.map(image=>{
+              return (
+                <Picture key={image.id} source={{uri:image.url}}/>
+              )
+            })
+          }
         </ScrollImages>
 
       </ContainerImages>

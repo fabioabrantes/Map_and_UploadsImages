@@ -17,7 +17,7 @@ export const ScrollImages = styled.ScrollView``;
 export const Picture = styled.Image.attrs({
   resizeMode: "cover"
 })`
-  width: ${Dimensions.get('window').width};
+  width: ${Dimensions.get('window').width}px;
   height: 240px;
 `;
 

@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import  MapView, {Marker,Callout, PROVIDER_GOOGLE} from 'react-native-maps';
+import  MapView, {Marker,Callout, PROVIDER_GOOGLE,PROVIDER_DEFAULT} from 'react-native-maps';
 
 import {  Platform,  PermissionsAndroid} from 'react-native';
 
@@ -19,12 +19,7 @@ import {
   TextFooter 
 } from './styles';
 
-interface IAssociation{
-  id:number;
-  latitude:number;
-  longitude:number;
-  name:string;
-}
+import IAssociation from '../../dto/Issociation';
 
 export function OrphanagesMap(){
 
@@ -69,7 +64,7 @@ export function OrphanagesMap(){
           ).then(()=>{console.log("usuario aceitou")})
         }}
         mapType="standard"
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === 'android'? PROVIDER_GOOGLE: PROVIDER_DEFAULT}
         initialRegion={{
           latitude:-6.5195987,
           longitude:-38.4098952,
@@ -106,7 +101,7 @@ export function OrphanagesMap(){
       </ContainerMap>
 
       <ContainerFooter style={{elevation:3,shadowOffset:{width:0,height:3}}}>
-        <TextFooter> {associations.length} orfanatos </TextFooter>
+        <TextFooter> {associations.length} associação </TextFooter>
 
         <Button onPress={handleNavigateToCreateOrphanage}> 
           <Icon name="plus" size={20} color="#fff"/>

@@ -32,45 +32,16 @@ type IResult = {
 }
 
 export function OrphanageData(){
-  const navigation =useNavigation();
-
-  const route = useRoute();
-  const {position} = route.params as ParamsPositions;
-
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
   const [instructions, setInstructions] = useState('');
   const [opening_hours, setOpeningHours] = useState('');
-  const [open_on_weekends, setOpenOnWeekends] = useState(true);
-  const [imagesURI, setImagesURI] = useState<string[]>([]);
+  const [open_on_weekends, setOpenOnWeekends] = useState('');
+  const [imagesPath, setImagesPath] = useState<string[]>([]);
 
-
-  async function handleCreateOrphanage(){
-    const {latitude,longitude} = position;
-
-    // estamos usando o formdata em vez no formato json. pois temos arquivos de imagens
-    const data = new FormData();
-
-    data.append('name', name);
-    data.append('about', about);
-    data.append('latitude', String(latitude));
-    data.append('longitude', String(longitude));
-    data.append('instructions', instructions);
-    data.append('opening_hours', opening_hours);
-    data.append('open_on_weekends', String(open_on_weekends));
-    
-    imagesURI.forEach((imageURI, index) => {
-      data.append('images', {
-        name: `image_${index}.jpg`,
-        type: 'image/jpg',
-        uri: imageURI,
-      } as any); // por que não tem formato definido. problema do react native que não tem o name da imagem
-    });
-
-    await api.post('associations/register',data);
-    navigation.navigate('OrphanagesMap');
-
-  }
+  const navigation =useNavigation();
+  const route = useRoute();
+  const {position} = route.params as ParamsPositions;
 
   //https://www.npmjs.com/package/expo-image-picker
   async function handleSelectImages() {
@@ -90,14 +61,44 @@ export function OrphanageData(){
     });
     /* console.log(result); */
     if(!result.canceled) { // se cancelou o upload da imagem
-      const { uri } = result as IResult;
       // questão do conceito de imutabilidade. sempre que uma imagem for adicionado, 
       //temos que copiar as imagens que tinha antes no array. 
       //se não vai apagar na próxima renderização. pois começa sempre do zero
-      setImagesURI([...imagesURI, uri]);
+      setImagesPath([...imagesPath, result.assets[0].uri]);
+      console.log(imagesPath[0]);
     }
   }
 
+  async function handleCreateOrphanage(){
+    const {latitude,longitude} = position;
+
+    // estamos usando o formdata em vez no formato json. pois temos arquivos de imagens
+    const data = new FormData();
+
+    data.append('name', name);
+    data.append('about', about);
+    data.append('latitude', String(latitude));
+    data.append('longitude', String(longitude));
+    data.append('instructions', instructions);
+    data.append('opening_hours', opening_hours);
+    data.append('open_on_weekends', open_on_weekends);
+    
+    imagesPath.forEach((imageURI, index) => {
+      data.append('images', {
+        name: `image${index}.jpg`,
+        type: 'image/jpg',
+        uri: imageURI,
+      } as any); // por que não tem formato definido. problema do react native que não tem o name da imagem
+    });
+
+    const config = {     
+      headers: { 'content-type': 'multipart/form-data' }
+    }
+    
+    await api.post('associations/register',data,config);
+    navigation.navigate('OrphanagesMap');
+  }
+  
   return (
     <ContainerScroll>
       <Title>Dados</Title>
@@ -108,12 +109,9 @@ export function OrphanageData(){
       <Label>Sobre</Label>
       <InputArea multiline value={about} onChangeText={setAbout}/>
 
-      <Label>Whatsapp</Label>
-      <Input />
-
       <Label>Fotos</Label>
       <ContainerUploadImage>
-        {imagesURI.map(imgUri =><Picture key={imgUri} source={{uri:imgUri}}/>)}
+        {imagesPath.map(imgUri =><Picture key={imgUri} source={{uri:imgUri}}/>)}
       </ContainerUploadImage>
 
       <ButtonUploadImages onPress={handleSelectImages}>
@@ -131,12 +129,7 @@ export function OrphanageData(){
 
       <ContainerSwitch>
         <Label>Atende no final de semana?</Label>
-        <Switch 
-          thumbColor="#fff"
-          trackColor={{false:'#ccc', true:'#39cc83'}}
-          value={open_on_weekends}
-          onValueChange={setOpenOnWeekends}
-        />
+        <Input value={open_on_weekends} onChangeText={setOpenOnWeekends}/>
       </ContainerSwitch>
 
       <NextButton onPress={handleCreateOrphanage}>

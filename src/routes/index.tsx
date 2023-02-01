@@ -21,28 +21,19 @@ export function Routes(){
       <Screen  
         name="OrphanageDetails" 
         component={OrphanageDetails}
-        options={{
-          headerShown:true,
-          header: ()=> <Header title='Orfanato'/>
-        }}
+       
       />
 
       <Screen  
         name="SelectMapPosition" 
         component={SelectMapPosition}
-        options={{
-          headerShown:true,
-          header: ()=> <Header title='Selecione no Mapa'showX/>
-        }}
+        
       />
 
       <Screen  
         name="OrphanageData" 
         component={OrphanageData}
-        options={{
-          headerShown:true,
-          header: ()=> <Header title='Informe os dados'showX/>
-        }}
+      
       />
     </Navigator>
 
