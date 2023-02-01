@@ -19,7 +19,7 @@ import {
   TextFooter 
 } from './styles';
 
-interface Orphanage{
+interface IAssociation{
   id:number;
   latitude:number;
   longitude:number;
@@ -28,7 +28,7 @@ interface Orphanage{
 
 export function OrphanagesMap(){
 
-  const [orphanages, setOrphanages] = useState<Orphanage[]>([] as Orphanage[]);
+  const [associations, setAssociations] = useState<IAssociation[]>([] as IAssociation[]);
   /* const [location,setLocation] = useState(null); */
 
   const navigation = useNavigation();
@@ -54,8 +54,8 @@ export function OrphanagesMap(){
   // sempre que o usuário sair e voltar da tela, ela é disparada
   
   useFocusEffect(()=>{
-    api.get('orphanages').then(response=>{     
-      setOrphanages(response.data);
+    api.get('associations/all').then(response=>{     
+      setAssociations(response.data);
     }).catch(error=>console.log(error));
     /* getMyLocation(); */
   });
@@ -80,14 +80,14 @@ export function OrphanagesMap(){
         loadingEnabled
         minZoomLevel={17}
       >
-      {orphanages.map(orphanage =>
+      {associations.map(association =>
         <Marker
-          key={orphanage.id}
+          key={association.id}
           icon={mapMarker}
           coordinate = {
             {
-              latitude:orphanage.latitude,
-              longitude:orphanage.longitude,
+              latitude:association.latitude,
+              longitude:association.longitude,
             }
           }
           calloutAnchor={{x:2.7, y:0.8}}
@@ -95,10 +95,10 @@ export function OrphanagesMap(){
         >
           <Callout
             tooltip={true}
-            onPress={()=>handlerNavigateToOrphanageDetails(orphanage.id)}
+            onPress={()=>handlerNavigateToOrphanageDetails(association.id)}
           >
             <ContainerCallout>
-                <TextCallout>{orphanage.name}</TextCallout>
+                <TextCallout>{association.name}</TextCallout>
             </ContainerCallout>
           </Callout>
         </Marker>
@@ -106,7 +106,7 @@ export function OrphanagesMap(){
       </ContainerMap>
 
       <ContainerFooter style={{elevation:3,shadowOffset:{width:0,height:3}}}>
-        <TextFooter> {orphanages.length} orfanatos </TextFooter>
+        <TextFooter> {associations.length} orfanatos </TextFooter>
 
         <Button onPress={handleNavigateToCreateOrphanage}> 
           <Icon name="plus" size={20} color="#fff"/>

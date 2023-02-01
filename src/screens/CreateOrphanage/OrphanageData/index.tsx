@@ -67,7 +67,7 @@ export function OrphanageData(){
       } as any); // por que não tem formato definido. problema do react native que não tem o name da imagem
     });
 
-    await api.post('orphanages',data);
+    await api.post('associations/register',data);
     navigation.navigate('OrphanagesMap');
 
   }

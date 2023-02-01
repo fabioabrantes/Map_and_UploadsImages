@@ -38,7 +38,7 @@ interface ImageUrl{
   id:number;
   url:string;
 }
-interface Orphanage {
+interface IAssociation {
   id: number;
   name: string;
   latitude: number;
@@ -54,23 +54,24 @@ interface ParamsId{
   id:number;
 }
 export function OrphanageDetails(){
- const route = useRoute();
- const {id} = route.params as ParamsId;
+  const [association, setAssociation] = useState<IAssociation>();
 
- const [orphanage, setOrphanage] = useState<Orphanage>();
+  const route = useRoute();
+  const {id} = route.params as ParamsId;
 
- useEffect(()=>{
-   api.get(`orphanages/${id}`).then(response=>{
-    setOrphanage(response.data);
+
+  useEffect(()=>{
+    api.get(`associations/detail/${id}`).then(response=>{
+      setAssociation(response.data);
    })
  },[id]);
 
 
  function handleOpenGoogleMapsRoute(){
-   Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${orphanage?.latitude},${orphanage?.longitude}`);
+   Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${association?.latitude},${association?.longitude}`);
  }
  
- if(!orphanage){
+ if(!association){
   return <Load />
 }
 
@@ -78,7 +79,7 @@ export function OrphanageDetails(){
     <ContainerScroll>
       <ContainerImages>
         <ScrollImages  horizontal pagingEnabled>
-          {orphanage.images.map(image=>{
+          {association.images.map(image=>{
             return (
               <Picture key={image.id} source={{uri:image.url}}/>
             )
@@ -88,15 +89,15 @@ export function OrphanageDetails(){
       </ContainerImages>
 
       <ContainerOrphanage>
-        <Title>{orphanage.name}</Title>
+        <Title>{association.name}</Title>
 
-        <Description>{orphanage.about}</Description>
+        <Description>{association.about}</Description>
         
         <ContainerMap>
           <Map 
             initialRegion={{
-              latitude:orphanage.latitude,
-              longitude:orphanage.longitude,
+              latitude:association.latitude,
+              longitude:association.longitude,
               latitudeDelta:0.008,
               longitudeDelta:0.008,
             }} 
@@ -108,8 +109,8 @@ export function OrphanageDetails(){
             <Marker 
               icon={mapMarker}
               coordinate={{ 
-                latitude:orphanage.latitude,
-                longitude:orphanage.longitude,
+                latitude:association.latitude,
+                longitude:association.longitude,
               }}
             />
           </Map>
@@ -124,17 +125,17 @@ export function OrphanageDetails(){
 
       <Title>Instruções para visitar</Title>
 
-      <Description>{orphanage.instructions}</Description>
+      <Description>{association.instructions}</Description>
       
       <ContainerSchedule>
         <ContainerScheduleItemBlue >
           <Icon name="clock" size={40} color="#2ab5d1"/>
           <TextScheduleItemBlue> 
-            Segunda à sexta {orphanage.opening_hours}
+            Segunda à sexta {association.opening_hours}
           </TextScheduleItemBlue>
         </ContainerScheduleItemBlue>
        
-       {orphanage.open_on_weekends? (
+       {association.open_on_weekends? (
            <ContainerScheduleItemGreen>
               <Icon name="clock" size={40} color="#2ab5d1"/>
               
