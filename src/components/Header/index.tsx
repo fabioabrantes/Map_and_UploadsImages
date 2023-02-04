@@ -5,18 +5,23 @@ import { Button, Container, Content, Icon, Title } from './styles';
 interface HeaderProps{
   title:string;
   showX?:boolean;
+  screenBack:"OrphanagesMap" | "SelectMapPosition";
 }
 
-export function Header({title, showX=false}:HeaderProps){
+export function Header({title,screenBack, showX=false}:HeaderProps){
   const navigation = useNavigation();
   
   function handlerGoToAppHomepage(){
     navigation.navigate('OrphanagesMap');// vai para rota do mapa
   }
 
+  function handlerGoBack(){
+    navigation.navigate(screenBack);// vai para rota do mapa
+  }
+
   return (
     <Container>
-      <Button onPress={navigation.goBack}>
+      <Button onPress={handlerGoBack}>
         <Icon name="arrow-left" size={24} color="#15b6d6"/>
       </Button>
      

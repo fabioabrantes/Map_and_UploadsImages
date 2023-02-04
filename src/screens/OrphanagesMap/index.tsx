@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import  MapView, {Marker,Callout, PROVIDER_GOOGLE,PROVIDER_DEFAULT} from 'react-native-maps';
+import  {Marker,Callout, PROVIDER_GOOGLE,PROVIDER_DEFAULT} from 'react-native-maps';
 
 import {  Platform,  PermissionsAndroid} from 'react-native';
 

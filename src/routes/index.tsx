@@ -1,5 +1,4 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {OrphanagesMap} from '../screens/OrphanagesMap';
@@ -13,7 +12,7 @@ const {Navigator, Screen} = createNativeStackNavigator();
 export function Routes(){
   return (
     <Navigator 
-      screenOptions={{headerShown:false,}}
+      screenOptions={{headerShown:false}}
       initialRouteName='OrphanagesMap'
     >
       <Screen name="OrphanagesMap" component={OrphanagesMap}/>
@@ -21,19 +20,28 @@ export function Routes(){
       <Screen  
         name="OrphanageDetails" 
         component={OrphanageDetails}
-       
+        options={{
+          headerShown:true,
+          header: ()=> <Header title='Detalhes da Associação' screenBack="OrphanagesMap"/>
+        }}
       />
 
       <Screen  
         name="SelectMapPosition" 
         component={SelectMapPosition}
-        
+        options={{
+          headerShown:true,
+          header: ()=> (<Header title='Escolha a localização' screenBack="OrphanagesMap"/>)
+        }}
       />
 
       <Screen  
         name="OrphanageData" 
         component={OrphanageData}
-      
+        options={{
+          headerShown:true,
+          header: ()=> (<Header title='Informe os Dados' screenBack="SelectMapPosition" showX/>)
+        }}
       />
     </Navigator>
 
